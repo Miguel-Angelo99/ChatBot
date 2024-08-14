@@ -1,0 +1,405 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html, body {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    background-color: #f0f2f5;
+}
+
+::selection {
+    color: #fff;
+    background: #0756aa;
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+    border-radius: 25px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ddd;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+}
+
+.wrapper {
+    max-width: 370px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.wrapper .title {
+    background: #0756aa;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 60px;
+    text-align: center;
+    border-bottom: 1px solid #0756aa;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.wrapper .form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.wrapper .form .inbox .msg-header p {
+    color: #000;
+    background: #fff;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 14px;
+    word-break: break-word;
+    margin-bottom: 5px;
+    align-self: flex-start;
+    max-width: fit-content;
+}
+
+.wrapper .typing-field {
+    background: #f5f5f5;
+    border-top: 1px solid #ced4da;
+}
+
+.wrapper .typing-field .input-data {
+    display: flex;
+    align-items: center;
+}
+
+.wrapper .typing-field .input-data input {
+    flex-grow: 1;
+    outline: none;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 15px;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.wrapper .typing-field .input-data input:focus {
+    border-color: #0756aa;
+}
+
+.wrapper .typing-field .input-data button {
+    height: 40px;
+    width: 80px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 5px;
+    background: #0756aa;
+    border: 1px solid #0756aa;
+    transition: all 0.3s ease;
+}
+
+.wrapper .typing-field .input-data input:valid ~ button {
+    opacity: 1;
+}
+
+.wrapper .typing-field .input-data button:hover {
+    background: #003366;
+}
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.suggestions button::before,
+.suggestion-btn::before {
+    margin-bottom: 5px;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.suggestions button,
+.suggestion-btn {
+    margin: 5px;
+    padding: 8px 15px;
+    font-size: 14px;
+    background-color: #0756aa;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.suggestions button:hover,
+.suggestion-btn:hover {
+    background-color: #003366;
+}
+
+.suggestions button::before,
+.suggestion-btn::before {
+    margin-bottom: 5px;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.suggestions button {
+    background-color: #074c91eb;
+}
+
+.suggestions button::before,
+.suggestion-btn::before {
+    margin-bottom: 5px;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.suggestions button[data-value="inicio"]::before {
+    content: '\f007';
+}
+
+.suggestions button[data-value="opcion1"]::before {
+    content: '\f0e8';
+}
+
+.suggestions button[data-value="opcion2"]::before {
+    content: '\f19d';
+}
+
+.suggestions button[data-value="opcion3"]::before {
+    content: '\f1fe';
+}
+
+.suggestions button[data-value="agua"]::before {
+    content: '\f773';
+}
+
+.chat-tab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #0756aa;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    transition: bottom 0.3s ease;
+}
+
+.chat-tab i {
+    font-size: 20px;
+}
+
+.chat-container {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    max-width: 370px;
+    background: #f5f5f5;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 998;
+    transition: bottom 0.3s ease;
+}
+
+.chat-container.active {
+    bottom: 300px;
+}
+
+.chat-container.active + .chat-tab {
+    bottom: -40px;
+}
+
+.chat-container.active .title {
+    background: #003366;
+    cursor: pointer;
+}
+
+.circle {
+    background-color: #003366;
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.circle.loading::after {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin: 15px auto;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    border-color: #fff transparent;
+    animation: pulse 1s infinite;
+}
+
+.circle:hover::after {
+    content: "¿Necesitas ayuda?";
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: #003366;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    opacity: 0.9;
+    z-index: 1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+    }
+    50% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    }
+    100% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* Estilos para el botón "Presione Aquí" */
+.press-here-btn {
+    background-color: #003366; /* Color de fondo del botón */
+    color: #fff; /* Color del texto del botón */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.press-here-btn:hover {
+    background-color: #002549; /* Cambio de color al pasar el mouse */
+    transform: scale(1.1); /* Efecto de escala al pasar el mouse */
+}
+
+/* Estilos para todos los botones dentro del chatbot */
+.bot-inbox .msg-header button {
+    background-color: #003366; /* Color de fondo del botón */
+    color: #fff; /* Color del texto del botón */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.bot-inbox .msg-header button:hover {
+    background-color: #002549; /* Cambio de color al pasar el mouse */
+    transform: scale(1.1); /* Efecto de escala al pasar el mouse */
+}
+/* Estilos para todos los botones dentro del chatbot, incluyendo los de ruta */
+.bot-inbox .msg-header button,
+.suggestions button {
+    background-color: #003366; /* Color de fondo del botón */
+    color: #fff; /* Color del texto del botón */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.bot-inbox .msg-header button:hover,
+.suggestions button:hover {
+    background-color: #002549; /* Cambio de color al pasar el mouse */
+    transform: scale(1.1); /* Efecto de escala al pasar el mouse */
+}
+
+/* Cambiar el color y grosor del contorno al pasar el cursor sobre los mensajes del chatbot */
+.form .bot-inbox:hover .msg-header p,
+.form .user-inbox:hover .msg-header p {
+    border: 2px solid #003366; /* Cambiar el grosor y color del contorno al pasar el cursor */
+    border-radius: 10px; /* Ajustar el radio para hacer esquinas redondeadas */
+}
+
+
+
+
+.suggestions button::before,
+.suggestion-btn::before {
+    margin-right: 5px;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.suggestions button[data-value="inicio"]::before {
+    content: '\f041'; /* Icono de ubicación */
+}
+
+.suggestions button[data-value="opcion1"]::before {
+    content: '\f002'; /* Icono de lupa */
+}
+
+.suggestions button[data-value="opcion2"]::before {
+    content: '\f56f'; /* Icono de envío de documento */
+}
+
+.suggestions button[data-value="opcion3"]::before {
+    content: '\f05a'; /* Icono de información junto con un teléfono */
+}
+
+
+
+
+/* Establecer el fondo del chat a un azul muy tenue */
+.chat-container {
+    background-color: #cfe8f9; /* Puedes ajustar el color según tus preferencias */
+}
+

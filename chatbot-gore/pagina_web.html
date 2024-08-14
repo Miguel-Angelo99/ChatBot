@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Componentes de PC</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>¡Bienvenido a nuestra tienda de Componentes de PC!</h1>
+        </header>
+
+        <section>
+            <h2>Explora nuestros productos</h2>
+        </section>
+
+        <footer>
+            <p>Contacto: info@componentespc.com</p>
+        </footer>
+
+        <div class="circle" onclick="toggleMessage()">
+            <i class="fas fa-comment"></i>
+        </div>
+
+        <div class="message" id="message" style="display: none;">
+            ¿Necesitas ayuda?
+        </div>
+        
+
+        <div class="chat-container">
+            <div class="title" onclick="toggleChat()">Pregúntale a Clarita</div>
+            <div class="form">
+                <!-- Mensaje de bienvenida -->
+                <div class="bot-inbox inbox">
+                    <div class="msg-header">
+                        <p>Hola, soy Clarita</p>
+                        <p>Una Asistente Virtual y estoy aquí para orientarte con tus consultas sobre componentes de PC</p>
+                    </div>
+                </div>
+            </div>
+            <div class="typing-field">
+                <div class="input-data">
+                    <input id="data" type="text" placeholder="Escribe algo aquí.." required>
+                    <button id="send-btn">Enviar</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                /// Código AJAX para obtener las rutas al iniciar el chat
+                $.ajax({
+                    url: 'chatbot_controller.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { text: 'iniciar' },
+                    success: function (result) {
+                        // Mostrar los mensajes de bienvenida
+                        if (result.replies && result.replies.length > 0) {
+                            for (var i = 0; i < result.replies.length; i++) {
+                                var welcomeMessage = '<div class="bot-inbox inbox"><div class="msg-header"><p>' + result.replies[i] + '</p></div></div>';
+                                $(".form").append(welcomeMessage);
+                            }
+                        }
+
+                        // Mostrar opciones como mensajes regulares con un botón "Presione Aquí"
+                        showSuggestions(result.suggestions);
+
+                        // Desplazamiento al final del chat
+                        $(".form").scrollTop($(".form")[0].scrollHeight);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+        
+                // Evento click del botón de enviar
+                $("#send-btn").on("click", function () {
+                    $value = $("#data").val();
+                    $msg = '<div class="user-inbox inbox"><div class="msg-header"><p>' + $value + '</p></div></div>';
+                    // Mostrar mensaje del usuario con delay
+                    mostrarMensajeConDelay($msg);
+                    $("#data").val('');
+
+                    // Código AJAX para procesar el mensaje del usuario
+                    $.ajax({
+                        url: 'chatbot_controller.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { text: $value },
+                        success: function (result) {
+                            // Mostrar las opciones como mensajes regulares con un botón "Presione Aquí"
+                            showSuggestions(result.suggestions);
+
+                            if (result.replies) {
+                                $replay = '<div class="bot-inbox inbox"><div class="icon"><i class="fas fa-user"></i></div><div class="msg-header"><p>' + result.replies + '</p></div></div>';
+                                // Mostrar respuesta del chatbot con delay
+                                mostrarMensajeConDelay($replay);
+                            }
+
+                            // Verificar si hay información para la ruta antes de mostrar el botón "Presione Aquí"
+                            if (result.enlace) {
+                                // Agregar un botón "Presione Aquí" después del mensaje de opción
+                                var pressHereButton = '<div class="bot-inbox inbox"><div class="msg-header"><button class="press-here-btn" data-response="' + result.enlace + '">Presione Aquí</button></div></div>';
+                                // Mostrar botón "Presione Aquí" con delay
+                                mostrarMensajeConDelay(pressHereButton, true);
+                            }
+
+                            // Desplazamiento al final del chat
+                            $(".form").scrollTop($(".form")[0].scrollHeight);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                });
+
+                // Función para mostrar mensajes con un delay de 1 segundo
+                function mostrarMensajeConDelay(mensaje, esBoton) {
+                    setTimeout(function () {
+                        $(".form").append(mensaje);
+                        // Desplazamiento al final del chat
+                        $(".form").scrollTop($(".form")[0].scrollHeight);
+
+                        // Si es un botón, asignar evento click después de agregarlo al DOM
+                        if (esBoton) {
+                            $(".press-here-btn").on("click", function () {
+                                // Obtener el valor de respuesta
+                                var response = $(this).data("response");
+
+                                // Verificar si la respuesta es una URL válida
+                                if (isValidURL(response)) {
+                                    // Abrir una nueva pestaña con la URL
+                                    window.open(response, '_blank');
+                                } else {
+                                    // Manejar la respuesta de otra manera si no es una URL válida
+                                    console.error("La respuesta no es una URL válida:", response);
+                                }
+                            });
+                        }
+                    }, 1000); // Delay de 1 segundo
+                }
+
+                // Función para verificar si una cadena es una URL válida
+                function isValidURL(str) {
+                    var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+                        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+                        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+                        '(\\:\\d+)?(\\/[--a-z\\d%_.~+]*)*' + // port and path
+                        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+                        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+                    return pattern.test(str);
+                }
+
+                // Función para mostrar opciones como mensajes regulares con un botón "Presione Aquí"
+                function showSuggestions(suggestions) {
+                    if (suggestions && suggestions.length > 0) {
+                        for (var i = 0; i < suggestions.length; i++) {
+                            var suggestionMsg = '<div class="bot-inbox inbox"><div class="msg-header"><p>' + suggestions[i] + '</p></div></div>';
+                            // Mostrar sugerencias con delay
+                            mostrarMensajeConDelay(suggestionMsg);
+                        }
+                    }
+                }
+
+
+                // Función para mostrar opciones como mensajes regulares con un botón "Presione Aquí"
+                function showSuggestions(suggestions) {
+                    if (suggestions && suggestions.length > 0) {
+                        for (var i = 0; i < suggestions.length; i++) {
+                            var suggestionMsg = '<div class="bot-inbox inbox"><div class="msg-header"><p>' + suggestions[i] + '</p></div></div>';
+                            $(".form").append(suggestionMsg);
+                        }
+                    }
+                }
+
+        
+                // Función para mostrar las rutas disponibles al iniciar el chat
+                function mostrarRutas(rutas) {
+                    var rutasHtml = '<div class="bot-inbox inbox"><div class="msg-header"><p>Hola, soy Clarita, una Asistente Virtual y estoy aquí para orientarte con tus consultas.</p></div><div class="suggestions">';
+                    for (var i = 0; i < rutas.length; i++) {
+                        rutasHtml += '<button class="suggestion-btn" data-value="' + rutas[i] + '">' + rutas[i] + '</button>';
+                    }
+                    rutasHtml += '</div></div>';
+                    $(".form").append(rutasHtml);
+        
+                    // Asignar evento click a los botones de rutas
+                    $(".suggestion-btn").on("click", function () {
+                        var rutaValue = $(this).data("value");
+                        $("#data").val(rutaValue);
+                        $("#send-btn").click();
+                    });
+                }
+        
+                // Toggle para mostrar/ocultar el chatbot al hacer clic en la pestaña
+                var chatContainer = $(".chat-container");
+
+                window.toggleChat = function () {
+                    chatContainer.toggle();
+                    if (chatContainer.is(":visible")) {
+                        resetChatbot(); // Llamada a la función para reiniciar el chatbot al mostrarlo
+                    }
+                };
+
+                function resetChatbot() {
+                    // Limpiar el historial de mensajes
+                    $(".form").empty();
+
+                    // Código AJAX para obtener las rutas al reiniciar el chat
+                    $.ajax({
+                        url: 'chatbot_controller.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { text: 'iniciar' },
+                        success: function (result) {
+                            mostrarRutas(result.rutas);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+        
+            // Función para mostrar/ocultar el mensaje de ayuda
+            function toggleMessage() {
+                var chatContainer = $(".chat-container");
+        
+                // Verificar si el chatbot está visible antes de mostrar el mensaje
+                if (chatContainer.is(":visible")) {
+                    var message = document.getElementById("message");
+                    message.innerHTML = '¿Necesitas ayuda?'; // Añade el mensaje aquí
+                    message.style.display = "block";
+                    setTimeout(function () {
+                        message.style.display = "none";
+                    }, 1000); // Ocultar después de 1 segundo
+                }
+        
+                // Si el chatbot está oculto, mostrarlo
+                else {
+                    toggleChat();
+                }
+            }
+
+
+            // Función para registrar el uso de una ruta
+            function registrarUsoRuta(rutaId) {
+                    $.ajax({
+                        url: 'usar_ruta.php',
+                        type: 'POST',
+                        data: { ruta_id: rutaId },
+                        success: function (response) {
+                            console.log('Uso de ruta registrado');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+
+            
+            // Función para obtener el enlace de la última respuesta del chatbot
+            function obtenerLinkDeRespuesta() {
+                var mensajes = $(".form .bot-inbox");
+                if (mensajes.length > 0) {
+                    var ultimaRespuesta = mensajes.last();
+                    // Obtener el contenido del último mensaje
+                    var respuesta = ultimaRespuesta.find(".msg-header p").text();
+                    // Intentar analizar el contenido como JSON para obtener el enlace
+                    try {
+                        var respuestaJSON = JSON.parse(respuesta);
+                        if (respuestaJSON.enlace) {
+                            return respuestaJSON.enlace;
+                        }
+                    } catch (error) {
+                        console.error("Error al analizar la respuesta JSON:", error);
+                    }
+                }
+                return null;
+            }
+
+            // Función para mostrar las rutas disponibles
+        function mostrarRutasDisponibles(rutas) {
+            var rutasHtml = '<div class="bot-inbox inbox"><div class="msg-header"><p>Rutas disponibles:</p></div><div class="suggestions">';
+            for (var i = 0; i < rutas.length; i++) {
+                rutasHtml += '<button class="suggestion-btn" data-value="' + rutas[i] + '">' + rutas[i] + '</button>';
+            }
+            rutasHtml += '</div></div>';
+            $(".form").append(rutasHtml);
+
+            // Asignar evento click a los botones de rutas
+            $(".suggestion-btn").on("click", function () {
+                var rutaValue = $(this).data("value");
+                $("#data").val(rutaValue);
+                $("#send-btn").click();
+            });
+        }
+
+
+        </script>
+        
+        
+    </body>
+
+</html>
