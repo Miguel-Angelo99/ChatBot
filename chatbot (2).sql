@@ -171,8 +171,8 @@ CREATE TABLE IF NOT EXISTS `rutas` (
 
 INSERT INTO `rutas` (`id`, `ruta`, `opcion`, `respuesta`, `opcion_count`, `uso_count`) VALUES
 (20, '¿Deseas Ubicarnos?', 'Mira en que dirección nos encontramos.', 'link1234', 0, 0),
-(21, '¿Cómo ubico mi Documento? ', 'Para encontrar tu documento, necesitas el número de expediente y su año. Ambos son muy importantes. Si no estás seguro de cuál es tu número de expediente o el año, revisa la información que te dieron o pregunta a alguien que pueda ayudarte.', 'https://enlinea.regionlalibertad.gob.pe/', 0, 0),
-(22, '¿Cómo envío un Documento?', 'Regístrate si es la primera vez que ingresas. Una vez en el portal seleccione la opción de nueva solicitud y llene los campos con los datos que se le indique.', 'https://apps.regionlalibertad.gob.pe/seguimientotramite', 0, 0),
+(21, '¿Cómo ubico mi Documento? ', 'Para encontrar tu documento, necesitas el número de expediente y su año. Ambos son muy importantes. Si no estás seguro de cuál es tu número de expediente o el año, revisa la información que te dieron o pregunta a alguien que pueda ayudarte.', 'https://xxxxxxx', 0, 0),
+(22, '¿Cómo envío un Documento?', 'Regístrate si es la primera vez que ingresas. Una vez en el portal seleccione la opción de nueva solicitud y llene los campos con los datos que se le indique.', 'https://xxxxxxx', 0, 0),
 (23, 'Información de Oficina / Contáctanos', 'Mira nuestros locales, en los cuales recibirás la atención que requieras y nuestro numero de contacto. ', 'link785758', 0, 0);
 
 -- --------------------------------------------------------
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre_usuario`, `contrasena`) VALUES
-(1, 'admin', 'asdf');
+(1, 'admin', 'xxxxxxx');
 
 --
 -- Restricciones para tablas volcadas
